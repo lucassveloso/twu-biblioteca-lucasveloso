@@ -1,22 +1,34 @@
 package com.twu.biblioteca.models;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class BookTest {
+    private Book book;
+    private String title = "Book 1";
+    private String author = "Author 1";
+    private int year = 2000;
+
+    @Before
+    public void setUp() {
+        book = new Book(title, author, year);
+    }
+
     @Test
     public void shouldHaveATitle() {
-        String title = "Book 1";
-        Book book = new Book(title);
         assertThat(book.getTitle(), is(title));
     }
 
     @Test
-    public void shouldToStringReturnTitle() {
-        String title = "Book 1";
-        Book book = new Book(title);
-        assertThat(book.toString(), is(title));
+    public void shouldHaveAnAuthor() {
+        assertThat(book.getAuthor(), is(author));
+    }
+
+    @Test
+    public void shouldHaveAYear() {
+        assertThat(book.getYear(), is(year));
     }
 }

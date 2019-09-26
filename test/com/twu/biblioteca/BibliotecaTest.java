@@ -49,13 +49,22 @@ public class BibliotecaTest {
     }
 
     @Test
-    public void shouldPrintLibraryBooks() {
+    public void shouldPrintListOfBooksHeader() {
+        BibliotecaApp.main(new String[]{});
+        assertThat(outContent.toString(), containsString("List of Books"));
+        assertThat(outContent.toString(), containsString("TITLE"));
+        assertThat(outContent.toString(), containsString("AUTHOR"));
+        assertThat(outContent.toString(), containsString("YEAR"));
+    }
+
+    @Test
+    public void shouldPrintListOfBooks() {
         BibliotecaApp.main(new String[]{});
         List<Book> books = BibliotecaApp.library.getBooks();
-
-        assertThat(outContent.toString(), containsString("List of Books"));
         for(Book book : books) {
-            assertThat(outContent.toString(), containsString(book.toString()));
+            assertThat(outContent.toString(), containsString(book.getTitle()));
+            assertThat(outContent.toString(), containsString(book.getAuthor()));
+            assertThat(outContent.toString(), containsString(String.valueOf(book.getYear())));
         }
     }
 }

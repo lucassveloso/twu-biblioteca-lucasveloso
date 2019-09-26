@@ -12,8 +12,8 @@ public class LibraryTest {
     @Test
     public void shouldHaveAListOfBooks() {
         List<Book> books = new ArrayList<Book>();
-        books.add(new Book("Book 1"));
-        books.add(new Book("Book 2"));
+        books.add(new Book("Book 1", "Author 1", 2000));
+        books.add(new Book("Book 2", "Author 2", 2010));
 
         Library library = new Library(books);
 
