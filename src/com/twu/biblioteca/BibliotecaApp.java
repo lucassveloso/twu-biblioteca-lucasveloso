@@ -1,30 +1,47 @@
 package com.twu.biblioteca;
 
+import com.twu.biblioteca.menus.Menu;
+import com.twu.biblioteca.menus.MenuOption;
 import com.twu.biblioteca.models.Book;
 import com.twu.biblioteca.models.Library;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class BibliotecaApp {
     static Library library;
+    static Menu menu;
 
     static void showWelcomeMessage() {
-        System.out.println("Welcome to Biblioteca. Your one-stop-shop for great book titles in Bangalore!");
+        System.out.println("Welcome to Biblioteca. Your one-stop-shop for great book titles in Bangalore!\n");
+    }
+
+    static void populateLibrary() {
+        library = new Library(getBookList());
+    }
+
+    static void populateMenu() {
+        menu = new Menu(getMenuOptions());
+    }
+
+    static void showMenu() {
+        System.out.println(menu.getMenuPrintable());
     }
 
     static void showBookList() {
-        String divider = new String(new char[86]).replace("\0", "-");
-        String tableFormater = "%40s  %30s %8s\n";
+        System.out.println(library.getBookListTablePrintable());
+    }
 
-        System.out.println("\nList of Books:");
-        System.out.println(divider);
-        System.out.printf(tableFormater, "TITLE", "AUTHOR", "YEAR");
-        System.out.println(divider);
-        for(Book book : library.getBooks()) {
-            System.out.format(tableFormater, book.getTitle(), book.getAuthor(), book.getYear());
-        }
-        System.out.println(divider);
+    static void askUserMenuOption() {
+        Scanner in = new Scanner(System.in);
+        menu.selectOption(in.nextInt());
+    }
+
+    static List<MenuOption> getMenuOptions() {
+        List<MenuOption> options = new ArrayList<MenuOption>();
+        options.add(new MenuOption("List of Books", () -> { showBookList(); }));
+        return options;
     }
 
     static List<Book> getBookList() {
@@ -46,7 +63,9 @@ public class BibliotecaApp {
 
     public static void main(String[] args) {
         showWelcomeMessage();
-        library = new Library(getBookList());
-        showBookList();
+        populateLibrary();
+        populateMenu();
+        showMenu();
+        askUserMenuOption();
     }
 }
