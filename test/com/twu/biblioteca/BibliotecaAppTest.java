@@ -49,7 +49,7 @@ public class BibliotecaAppTest {
     public void shouldPrintMenuWhenShowMenuIsCalled() {
         BibliotecaApp.populateMenu();
         BibliotecaApp.showMenu();
-        assertThat(outContent.toString(), containsString(BibliotecaApp.menu.toString()));
+        assertThat(outContent.toString(), containsString(BibliotecaApp.menu.getMenuPrintable()));
     }
 
     @Test
