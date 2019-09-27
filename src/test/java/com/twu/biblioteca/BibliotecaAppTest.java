@@ -1,19 +1,24 @@
 package com.twu.biblioteca;
 
+import com.twu.biblioteca.menus.InvalidMenuOptionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BibliotecaAppTest {
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private ByteArrayInputStream inContent;
+
     private final PrintStream originalOut = System.out;
+    private final InputStream originalIn = System.in;
 
     @Before
     public void setUpStreams() {
@@ -23,6 +28,7 @@ public class BibliotecaAppTest {
     @After
     public void restoreStreams() {
         System.setOut(originalOut);
+        System.setIn(originalIn);
     }
 
     @Test
@@ -52,10 +58,43 @@ public class BibliotecaAppTest {
     }
 
     @Test
-    public void shouldPrintListOfBooksWhenOptionOneWasChosenFromMenu() {
+    public void shouldPrintListOfBooksWhenOptionOneWasChosenFromMenu() throws InvalidMenuOptionException {
         BibliotecaApp.populateLibrary();
         BibliotecaApp.populateMenu();
         BibliotecaApp.menu.selectOption(1);
         assertThat(outContent.toString(), containsString(BibliotecaApp.library.getBookListTablePrintable()));
     }
+
+
+    @Test
+    public void shouldExitToMenuWhenOptionTwoWasChosenFromMenu() throws InvalidMenuOptionException {
+        BibliotecaApp.populateMenu();
+        assertTrue(BibliotecaApp.appRunning);
+        BibliotecaApp.menu.selectOption(2);
+        assertFalse(BibliotecaApp.appRunning);
+    }
+
+    private void provideInput(String data) {
+        inContent = new ByteArrayInputStream(data.getBytes());
+        System.setIn(inContent);
+    }
+
+    @Test
+    public void shouldPrintInvalidErrorWhenUserInputInvalidMenuOption() {
+        BibliotecaApp.populateMenu();
+        BibliotecaApp.showMenu();
+        provideInput("100");
+        BibliotecaApp.askUserMenuOption();
+        assertThat(outContent.toString(), containsString(new InvalidMenuOptionException().getMessage()));
+    }
+
+    @Test
+    public void shouldPrintInvalidErrorWhenUserInputInvalidMenuOptionWithLetters() {
+        BibliotecaApp.populateMenu();
+        BibliotecaApp.showMenu();
+        provideInput("ABC");
+        BibliotecaApp.askUserMenuOption();
+        assertThat(outContent.toString(), containsString(new InvalidMenuOptionException().getMessage()));
+    }
+
 }

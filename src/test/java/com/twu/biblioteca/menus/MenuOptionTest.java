@@ -5,11 +5,12 @@ import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
 public class MenuOptionTest {
     private MenuOption option;
     private String description = "Option 1";
-    private Action action = () -> {};
+    private Action action = mock(Action.class);
 
     @Before
     public void setUp() {
@@ -26,4 +27,9 @@ public class MenuOptionTest {
         assertThat(option.getAction(), is(action));
     }
 
+    @Test
+    public void shouldCallActionWhenExecuteIsCalled() {
+        option.execute();
+        verify(action, times(1)).execute();
+    }
 }

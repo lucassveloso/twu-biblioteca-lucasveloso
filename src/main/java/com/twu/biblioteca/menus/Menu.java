@@ -13,15 +13,19 @@ public class Menu {
         return options;
     }
 
-    public void selectOption(int optionNumber) {
-        this.options.get(optionNumber - 1).execute();
+    public void selectOption(int optionNumber) throws InvalidMenuOptionException {
+        try {
+            this.options.get(optionNumber - 1).execute();
+        } catch ( IndexOutOfBoundsException e ) {
+            throw new InvalidMenuOptionException();
+        }
     }
 
     public String getMenuPrintable() {
-        StringBuilder message = new StringBuilder("Select one of the options below:\n");
+        StringBuilder message = new StringBuilder("Select one of the options below:");
         for (int i = 0; i < options.size(); i++) {
             int optionNumber = i+1;
-            message.append(optionNumber + " - " + options.get(i).getDescription());
+            message.append("\n" + optionNumber + " - " + options.get(i).getDescription());
         }
         return message.toString();
     }

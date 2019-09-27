@@ -1,17 +1,20 @@
 package com.twu.biblioteca;
 
+import com.twu.biblioteca.menus.InvalidMenuOptionException;
 import com.twu.biblioteca.menus.Menu;
 import com.twu.biblioteca.menus.MenuOption;
 import com.twu.biblioteca.models.Book;
 import com.twu.biblioteca.models.Library;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class BibliotecaApp {
     static Library library;
     static Menu menu;
+    static boolean appRunning = true;
 
     static void showWelcomeMessage() {
         System.out.println("Welcome to Biblioteca. Your one-stop-shop for great book titles in Bangalore!\n");
@@ -34,13 +37,22 @@ public class BibliotecaApp {
     }
 
     static void askUserMenuOption() {
-        Scanner in = new Scanner(System.in);
-        menu.selectOption(in.nextInt());
+        try {
+            Scanner in = new Scanner(System.in);
+            menu.selectOption(in.nextInt());
+        } catch (InvalidMenuOptionException | InputMismatchException e) {
+            System.out.println(new InvalidMenuOptionException().getMessage());
+        }
+    }
+
+    static void quitApp() {
+        appRunning = false;
     }
 
     static List<MenuOption> getMenuOptions() {
         List<MenuOption> options = new ArrayList<MenuOption>();
         options.add(new MenuOption("List of Books", () -> { showBookList(); }));
+        options.add(new MenuOption("Quit", () -> { quitApp(); }));
         return options;
     }
 
@@ -61,11 +73,17 @@ public class BibliotecaApp {
         return books;
     }
 
-    public static void main(String[] args) {
+    public static void displayMainMenu() {
+        while(appRunning) {
+            showMenu();
+            askUserMenuOption();
+        }
+    }
+
+    public static void main(String[] args) throws InvalidMenuOptionException {
         showWelcomeMessage();
         populateLibrary();
         populateMenu();
-        showMenu();
-        askUserMenuOption();
+        displayMainMenu();
     }
 }

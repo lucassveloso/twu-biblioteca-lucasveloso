@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="TWU_Biblioteca">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/build/libs/TWU_Biblioteca.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
