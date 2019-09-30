@@ -8,13 +8,19 @@ import static org.junit.Assert.assertThat;
 
 public class BookTest {
     private Book book;
+    private int id = 1;
     private String title = "Book 1";
     private String author = "Author 1";
     private int year = 2000;
 
     @Before
     public void setUp() {
-        book = new Book(title, author, year);
+        book = new Book(id, title, author, year);
+    }
+
+    @Test
+    public void shouldHaveAId() {
+        assertThat(book.getId(), is(id));
     }
 
     @Test

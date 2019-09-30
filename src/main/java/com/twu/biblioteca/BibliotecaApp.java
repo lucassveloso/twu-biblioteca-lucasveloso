@@ -58,32 +58,32 @@ public class BibliotecaApp {
 
     static List<Book> getBookList() {
         List<Book> books = new ArrayList<Book>();
-        books.add(new Book("Harry Potter Philosopher's Stone", "J. K. Rowling", 1997));
-        books.add(new Book("Harry Potter The Chamber of Secrets", "J. K. Rowling", 1998));
-        books.add(new Book("Harry Potter The Prisoner of Azkaban", "J. K. Rowling", 1999));
-        books.add(new Book("Harry Potter The Goblet of Fire", "J. K. Rowling", 2000));
-        books.add(new Book("Harry Potter The Order of the Phoenix", "J. K. Rowling", 2003));
-        books.add(new Book("Harry Potter The Half-Blood Prince", "J. K. Rowling", 2005));
-        books.add(new Book("Harry Potter The Deathly Hallows", "J. K. Rowling", 2007));
-        books.add(new Book("A Game of Thrones", "George R. R. Martin", 1996));
-        books.add(new Book("A Clash of Kings", "George R. R. Martin", 1998));
-        books.add(new Book("A Storm of Swords", "George R. R. Martin", 2000));
-        books.add(new Book("A Feast for Crows", "George R. R. Martin", 2005));
-        books.add(new Book("A Dance with Dragons", "George R. R. Martin", 2011));
+        books.add(new Book(1, "Harry Potter Philosopher's Stone", "J. K. Rowling", 1997));
+        books.add(new Book(2, "Harry Potter The Chamber of Secrets", "J. K. Rowling", 1998));
+        books.add(new Book(3, "Harry Potter The Prisoner of Azkaban", "J. K. Rowling", 1999));
+        books.add(new Book(4, "Harry Potter The Goblet of Fire", "J. K. Rowling", 2000));
+        books.add(new Book(5, "Harry Potter The Order of the Phoenix", "J. K. Rowling", 2003));
+        books.add(new Book(6, "Harry Potter The Half-Blood Prince", "J. K. Rowling", 2005));
+        books.add(new Book(7, "Harry Potter The Deathly Hallows", "J. K. Rowling", 2007));
+        books.add(new Book(8, "A Game of Thrones", "George R. R. Martin", 1996));
+        books.add(new Book(9, "A Clash of Kings", "George R. R. Martin", 1998));
+        books.add(new Book(10, "A Storm of Swords", "George R. R. Martin", 2000));
+        books.add(new Book(11, "A Feast for Crows", "George R. R. Martin", 2005));
+        books.add(new Book(12, "A Dance with Dragons", "George R. R. Martin", 2011));
         return books;
     }
 
-    public static void displayMainMenu() {
+public static void keepMenuRunning() {
         while(appRunning) {
             showMenu();
             askUserMenuOption();
         }
     }
 
-    public static void main(String[] args) throws InvalidMenuOptionException {
+    public static void main(String[] args) {
         showWelcomeMessage();
         populateLibrary();
         populateMenu();
-        displayMainMenu();
+        keepMenuRunning();
     }
 }

@@ -18,8 +18,8 @@ public class LibraryTest {
     @Before
     public void setUp() {
         books = new ArrayList<Book>();
-        books.add(new Book("Book 1", "Author 1", 2000));
-        books.add(new Book("Book 2", "Author 2", 2010));
+        books.add(new Book(1, "Book 1", "Author 1", 2000));
+        books.add(new Book(2, "Book 2", "Author 2", 2010));
 
         library = new Library(books);
     }
