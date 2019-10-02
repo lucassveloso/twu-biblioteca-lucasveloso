@@ -1,16 +1,20 @@
 package com.twu.biblioteca.models;
 
+import java.util.UUID;
+
 public class Book {
-    private int id;
+    private UUID id;
     private String title;
     private String author;
     private int year;
+    private boolean checkedOut;
 
-    public Book(int id, String title, String author, int year) {
-        this.id = id;
+    public Book(String title, String author, int year) {
+        this.id = UUID.randomUUID();
         this.title = title;
         this.author = author;
         this.year = year;
+        this.checkedOut = false;
     }
 
     public String getTitle() {
@@ -25,7 +29,15 @@ public class Book {
         return year;
     }
 
-    public Object getId() {
+    public UUID getId() {
         return id;
+    }
+
+    public boolean isCheckedOut() {
+        return checkedOut;
+    }
+
+    public void setCheckedOut(boolean checkedOut) {
+        this.checkedOut = checkedOut;
     }
 }
