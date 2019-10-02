@@ -1,52 +1,36 @@
 package com.twu.biblioteca;
 
-import com.twu.biblioteca.menus.InvalidMenuOptionException;
+import com.twu.biblioteca.menus.Menu;
+import com.twu.biblioteca.models.Library;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class BibliotecaAppTest {
     private final int MENU_OPTION_ONE = 1;
     private final int MENU_OPTION_TWO = 2;
-    private final String INVALID_MENU_OPTION = "100";
-    private final String INVALID_MENU_OPTION_WITH_LETTERS = "ABC";
-
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-    private ByteArrayInputStream inContent;
-
-    private final PrintStream originalOut = System.out;
-    private final InputStream originalIn = System.in;
+    private HelperIO helperIO;
 
     @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
+    public void setUp() {
+        helperIO = new HelperIO();
     }
 
     @After
-    public void restoreStreams() {
-        System.setOut(originalOut);
-        System.setIn(originalIn);
-    }
-
-
-    private void provideInput(String data) {
-        inContent = new ByteArrayInputStream(data.getBytes());
-        System.setIn(inContent);
+    public void tearDown() {
+        helperIO.restoreIO();
     }
 
     @Test
     public void shouldPrintTheWelcomeMessageWhenShowWelcomeMessageIsCalled() {
         String expectedMessage = "Welcome to Biblioteca. Your one-stop-shop for great book titles in Bangalore!\n";
         BibliotecaApp.showWelcomeMessage();
-        assertThat(outContent.toString(), containsString(expectedMessage));
+        assertThat(helperIO.getOutContent(), containsString(expectedMessage));
     }
 
     @Test
@@ -62,43 +46,27 @@ public class BibliotecaAppTest {
     }
 
     @Test
-    public void shouldPrintMenuWhenShowMenuIsCalled() {
-        BibliotecaApp.populateMenu();
-        BibliotecaApp.showMenu();
-        assertThat(outContent.toString(), containsString(BibliotecaApp.menu.getMenuPrintable()));
-    }
-
-    @Test
-    public void shouldPrintListOfBooksWhenOptionOneWasChosenFromMenu() throws InvalidMenuOptionException {
+    public void shouldCallShowBookListTablePrintableWhenOptionOneWasChosenFromMenu() {
         BibliotecaApp.populateLibrary();
         BibliotecaApp.populateMenu();
+        Library library = mock(Library.class);
+        BibliotecaApp.library = library;
+
         BibliotecaApp.menu.selectOption(this.MENU_OPTION_ONE);
-        assertThat(outContent.toString(), containsString(BibliotecaApp.library.getBookListTablePrintable()));
+
+        verify(BibliotecaApp.library, times(1)).showBookListTablePrintable();
     }
 
 
     @Test
-    public void shouldExitToMenuWhenOptionTwoWasChosenFromMenu() throws InvalidMenuOptionException {
+    public void shouldCallStopRunningWhenOptionTwoWasChosenFromMenu() {
         BibliotecaApp.populateMenu();
+        Menu menu = spy(new Menu(BibliotecaApp.menu.getOptions()));
+
+        BibliotecaApp.menu = menu;
         BibliotecaApp.menu.selectOption(this.MENU_OPTION_TWO);
-        assertFalse(BibliotecaApp.appRunning);
+
+        verify(menu, times(1)).stopRunning();
     }
 
-    @Test
-    public void shouldPrintInvalidErrorWhenUserInputInvalidMenuOption() {
-        BibliotecaApp.populateMenu();
-        BibliotecaApp.showMenu();
-        provideInput(this.INVALID_MENU_OPTION);
-        BibliotecaApp.askUserMenuOption();
-        assertThat(outContent.toString(), containsString(new InvalidMenuOptionException().getMessage()));
-    }
-
-    @Test
-    public void shouldPrintInvalidErrorWhenUserInputInvalidMenuOptionWithLetters() {
-        BibliotecaApp.populateMenu();
-        BibliotecaApp.showMenu();
-        provideInput(this.INVALID_MENU_OPTION_WITH_LETTERS);
-        BibliotecaApp.askUserMenuOption();
-        assertThat(outContent.toString(), containsString(new InvalidMenuOptionException().getMessage()));
-    }
 }

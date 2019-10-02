@@ -1,9 +1,12 @@
 package com.twu.biblioteca.menus;
 
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Menu {
     private List<MenuOption> options;
+    private boolean keepRunning = true;
 
     public Menu(List<MenuOption> options) {
         this.options = options;
@@ -28,5 +31,29 @@ public class Menu {
             message.append("\n" + optionNumber + " - " + options.get(i).getDescription());
         }
         return message.toString();
+    }
+
+    public void showMenuPrintable() {
+        System.out.println(this.getMenuPrintable());
+    }
+
+    public void askUserMenuOption() {
+        try {
+            Scanner in = new Scanner(System.in);
+            this.selectOption(in.nextInt());
+        } catch (InvalidMenuOptionException | InputMismatchException e) {
+            System.out.println(new InvalidMenuOptionException().getMessage());
+        }
+    }
+
+    public void run() {
+        while(keepRunning) {
+            this.showMenuPrintable();
+            this.askUserMenuOption();
+        }
+    }
+
+    public void stopRunning() {
+        this.keepRunning = false;
     }
 }

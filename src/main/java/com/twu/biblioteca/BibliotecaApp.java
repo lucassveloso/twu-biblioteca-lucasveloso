@@ -1,20 +1,16 @@
 package com.twu.biblioteca;
 
-import com.twu.biblioteca.menus.InvalidMenuOptionException;
 import com.twu.biblioteca.menus.Menu;
 import com.twu.biblioteca.menus.MenuOption;
 import com.twu.biblioteca.models.Book;
 import com.twu.biblioteca.models.Library;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
 public class BibliotecaApp {
     static Library library;
     static Menu menu;
-    static boolean appRunning = true;
 
     static void showWelcomeMessage() {
         System.out.println("Welcome to Biblioteca. Your one-stop-shop for great book titles in Bangalore!\n");
@@ -28,31 +24,10 @@ public class BibliotecaApp {
         menu = new Menu(getMenuOptions());
     }
 
-    static void showMenu() {
-        System.out.println(menu.getMenuPrintable());
-    }
-
-    static void showBookList() {
-        System.out.println(library.getBookListTablePrintable());
-    }
-
-    static void askUserMenuOption() {
-        try {
-            Scanner in = new Scanner(System.in);
-            menu.selectOption(in.nextInt());
-        } catch (InvalidMenuOptionException | InputMismatchException e) {
-            System.out.println(new InvalidMenuOptionException().getMessage());
-        }
-    }
-
-    static void quitApp() {
-        appRunning = false;
-    }
-
     static List<MenuOption> getMenuOptions() {
         List<MenuOption> options = new ArrayList<MenuOption>();
-        options.add(new MenuOption("List of Books", () -> { showBookList(); }));
-        options.add(new MenuOption("Quit", () -> { quitApp(); }));
+        options.add(new MenuOption("List of Books", () -> { library.showBookListTablePrintable(); }));
+        options.add(new MenuOption("Quit", () -> { menu.stopRunning(); }));
         return options;
     }
 
@@ -73,17 +48,10 @@ public class BibliotecaApp {
         return books;
     }
 
-    public static void keepMenuRunning() {
-        while(appRunning) {
-            showMenu();
-            askUserMenuOption();
-        }
-    }
-
     public static void main(String[] args) {
         showWelcomeMessage();
         populateLibrary();
         populateMenu();
-        keepMenuRunning();
+        menu.run();
     }
 }
