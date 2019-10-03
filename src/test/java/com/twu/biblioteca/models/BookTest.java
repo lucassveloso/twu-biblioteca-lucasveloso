@@ -3,11 +3,8 @@ package com.twu.biblioteca.models;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.UUID;
-
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 public class BookTest {
@@ -22,27 +19,12 @@ public class BookTest {
     }
 
     @Test
-    public void shouldHaveAIdAsUUID() {
-        assertThat(book.getId(), isA(UUID.class));
-    }
-
-    @Test
-    public void shouldHaveATitle() {
-        assertThat(book.getTitle(), is(title));
+    public void shouldExtendsProduct() {
+        assertThat(book, isA(Product.class));
     }
 
     @Test
     public void shouldHaveAnAuthor() {
         assertThat(book.getAuthor(), is(author));
-    }
-
-    @Test
-    public void shouldHaveAYear() {
-        assertThat(book.getYear(), is(year));
-    }
-
-    @Test
-    public void shouldCheckedOutBeFalseWhenInstantiateAnObject() {
-        assertFalse(book.isCheckedOut());
     }
 }
