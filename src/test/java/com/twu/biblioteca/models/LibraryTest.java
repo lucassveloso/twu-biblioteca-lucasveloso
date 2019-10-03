@@ -21,6 +21,8 @@ import static org.mockito.Mockito.*;
 public class LibraryTest {
     private final int MENU_OPTION_ONE = 1;
     private final int MENU_OPTION_TWO = 2;
+    private final int MENU_OPTION_THREE = 3;
+
     List<Book> books;
     Library library;
     private HelperIO helperIO;
@@ -107,17 +109,6 @@ public class LibraryTest {
         assertTrue(library.getMenu().getOptions().size() > 0);
     }
 
-    @Test
-    public void shouldCallStopRunningWhenOptionTwoWasChosenFromMenu() {
-        library.populateMenu();
-        Menu menu = spy(new Menu(library.getMenu().getOptions()));
-
-        library.setMenu(menu);
-        library.getMenu().selectOption(this.MENU_OPTION_TWO);
-
-        verify(menu, times(1)).stopRunning();
-    }
-
 
     @Test
     public void shouldCallStartCheckoutProcessWhenOptionOneWasChosenFromMenu() {
@@ -152,5 +143,51 @@ public class LibraryTest {
         helperIO.setIn(id.toString());
         library.startCheckoutProcess();
         assertThat(helperIO.getOutContent(), containsString("Sorry, that book is not available"));
+    }
+
+    @Test
+    public void shouldCallStartReturnProcessWhenOptionTwoWasChosenFromMenu() {
+        List<Book> books = library.getBooks();
+        Library libraryMock = spy(new Library(books));
+        libraryMock.populateMenu();
+        libraryMock.getMenu().selectOption(this.MENU_OPTION_TWO);
+
+        verify(libraryMock, times(1)).startReturnProcess();
+    }
+
+    @Test
+    public void shouldPrintASuccessMessageWhenAnAvailableBookIdIsReturned() {
+        UUID id = library.getBooksAvailable().get(0).getId();
+        library.checkoutBookById(id);
+        helperIO.setIn(id.toString());
+        library.startReturnProcess();
+        assertThat(helperIO.getOutContent(), containsString("Thank you for returning the book"));
+    }
+
+    @Test
+    public void shouldPrintAUnsuccessMessageWhenAUnavailableBookIdTryToBeReturned() {
+        UUID id = library.getBooksAvailable().get(0).getId();
+        helperIO.setIn(id.toString());
+        library.startReturnProcess();
+        assertThat(helperIO.getOutContent(), containsString("That is not a valid book to return"));
+    }
+
+    @Test
+    public void shouldPrintAUnsuccessMessageWhenANonexistentBookIdTryToBeReturned() {
+        UUID id = UUID.randomUUID();
+        helperIO.setIn(id.toString());
+        library.startReturnProcess();
+        assertThat(helperIO.getOutContent(), containsString("That is not a valid book to return"));
+    }
+
+    @Test
+    public void shouldCallStopRunningWhenOptionThreeWasChosenFromMenu() {
+        library.populateMenu();
+        Menu menu = spy(new Menu(library.getMenu().getOptions()));
+
+        library.setMenu(menu);
+        library.getMenu().selectOption(this.MENU_OPTION_THREE);
+
+        verify(menu, times(1)).stopRunning();
     }
 }

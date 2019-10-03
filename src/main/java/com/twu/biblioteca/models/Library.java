@@ -38,6 +38,8 @@ public class Library {
         List<MenuOption> options = new ArrayList<MenuOption>();
         options.add(new MenuOption("Checkout a book", () -> {
             this.startCheckoutProcess();
+        })); options.add(new MenuOption("Return a book", () -> {
+            this.startReturnProcess();
         }));
         options.add(new MenuOption("Back", () -> { menu.stopRunning(); }));
         return options;
@@ -74,8 +76,17 @@ public class Library {
         book.setCheckedOut(true);
     }
 
+    public void returnBookById(UUID id) {
+        Book book = this.getBookCheckedOutById(id);
+        book.setCheckedOut(false);
+    }
+
     public Book getBookAvailableById(UUID id) {
        return this.books.stream().filter((book) ->  book.getId().equals(id) && !book.isCheckedOut()).findAny().orElse(null);
+    }
+
+    public Book getBookCheckedOutById(UUID id) {
+        return this.books.stream().filter((book) ->  book.getId().equals(id) && book.isCheckedOut()).findAny().orElse(null);
     }
 
     public void startCheckoutProcess() {
@@ -87,6 +98,20 @@ public class Library {
             System.out.println("Thank you! Enjoy the book\n");
             this.menu.stopRunning();
         } catch (Exception e) {
-            System.out.println(new InvalidCheckoutBookException().getMessage());        }
+            System.out.println(new InvalidCheckoutBookException().getMessage());
+        }
+    }
+
+    public void startReturnProcess() {
+        System.out.println("Write the book ID to return:");
+        try {
+            Scanner in = new Scanner(System.in);
+            UUID id = UUID.fromString(in.next());
+            this.returnBookById(id);
+            System.out.println("Thank you for returning the book\n");
+            this.menu.stopRunning();
+        } catch (Exception e) {
+            System.out.println(new InvalidReturnBookException().getMessage());
+        }
     }
 }
