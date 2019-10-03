@@ -70,12 +70,12 @@ public class Library {
     }
 
     public void checkoutBookById(UUID id) {
-        Book book = this.getBookById(id);
+        Book book = this.getBookAvailableById(id);
         book.setCheckedOut(true);
     }
 
-    public Book getBookById(UUID id) {
-       return this.books.stream().filter((book) ->  book.getId().equals(id)).collect(Collectors.toList()).get(0);
+    public Book getBookAvailableById(UUID id) {
+       return this.books.stream().filter((book) ->  book.getId().equals(id) && !book.isCheckedOut()).findAny().orElse(null);
     }
 
     public void startCheckoutProcess() {
@@ -87,7 +87,6 @@ public class Library {
             System.out.println("Thank you! Enjoy the book\n");
             this.menu.stopRunning();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+            System.out.println(new InvalidCheckoutBookException().getMessage());        }
     }
 }

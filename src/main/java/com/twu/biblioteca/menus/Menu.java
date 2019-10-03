@@ -47,6 +47,7 @@ public class Menu {
     }
 
     public void run() {
+        this.keepRunning = true;
         while(keepRunning) {
             this.showMenuPrintable();
             this.askUserMenuOption();

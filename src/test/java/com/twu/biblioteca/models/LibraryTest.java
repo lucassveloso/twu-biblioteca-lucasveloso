@@ -68,9 +68,9 @@ public class LibraryTest {
 
     @Test
     public void shouldCheckoutABookWhenCheckoutBookIsCalled() {
-        UUID bookId = library.getBooks().get(0).getId();
+        Book book = library.getBooks().get(0);
+        UUID bookId = book.getId();
         library.checkoutBookById(bookId);
-        Book book = library.getBookById(bookId);
         assertTrue(book.isCheckedOut());
     }
 
@@ -135,5 +135,22 @@ public class LibraryTest {
         helperIO.setIn(id.toString());
         library.startCheckoutProcess();
         assertThat(helperIO.getOutContent(), containsString("Thank you! Enjoy the book"));
+    }
+
+    @Test
+    public void shouldPrintAUnsuccessMessageWhenAUnavailableBookIdTryToBeCheckedOut() {
+        UUID id = library.getBooksAvailable().get(0).getId();
+        library.checkoutBookById(id);
+        helperIO.setIn(id.toString());
+        library.startCheckoutProcess();
+        assertThat(helperIO.getOutContent(), containsString("Sorry, that book is not available"));
+    }
+
+    @Test
+    public void shouldPrintAUnsuccessMessageWhenANonexistentBookIdTryToBeCheckedOut() {
+        UUID id = UUID.randomUUID();
+        helperIO.setIn(id.toString());
+        library.startCheckoutProcess();
+        assertThat(helperIO.getOutContent(), containsString("Sorry, that book is not available"));
     }
 }
