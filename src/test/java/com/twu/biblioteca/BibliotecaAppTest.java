@@ -2,6 +2,7 @@ package com.twu.biblioteca;
 
 import com.twu.biblioteca.menus.Menu;
 import com.twu.biblioteca.models.Library;
+import com.twu.biblioteca.models.VideoRental;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.*;
 public class BibliotecaAppTest {
     private final int MENU_OPTION_ONE = 1;
     private final int MENU_OPTION_TWO = 2;
+    private final int MENU_OPTION_THREE = 3;
     private HelperIO helperIO;
 
     @Before
@@ -36,7 +38,13 @@ public class BibliotecaAppTest {
     @Test
     public void shouldHaveALibraryWithBooksWhenPopulateLibraryIsCalled() {
         BibliotecaApp.populateLibrary();
-        assertTrue(BibliotecaApp.library.getBooks().size() > 0);
+        assertTrue(BibliotecaApp.library.getProducts().size() > 0);
+    }
+
+    @Test
+    public void shouldHaveAVideoRentalWithMoviesWhenPopulateVideoRentalIsCalled() {
+        BibliotecaApp.populateVideoRental();
+        assertTrue(BibliotecaApp.videoRental.getProducts().size() > 0);
     }
 
     @Test
@@ -57,14 +65,26 @@ public class BibliotecaAppTest {
         verify(BibliotecaApp.library, times(1)).showBookListTablePrintable();
     }
 
+    @Test
+    public void shouldCallShowMovieListTablePrintableWhenOptionTwoWasChosenFromMenu() {
+        BibliotecaApp.populateVideoRental();
+        BibliotecaApp.populateMenu();
+        VideoRental videoRental = mock(VideoRental.class);
+        BibliotecaApp.videoRental = videoRental;
+
+        BibliotecaApp.menu.selectOption(this.MENU_OPTION_TWO);
+
+        verify(BibliotecaApp.videoRental, times(1)).showMovieListTablePrintable();
+    }
+
 
     @Test
-    public void shouldCallStopRunningWhenOptionTwoWasChosenFromMenu() {
+    public void shouldCallStopRunningWhenOptionThreeWasChosenFromMenu() {
         BibliotecaApp.populateMenu();
         Menu menu = spy(new Menu(BibliotecaApp.menu.getOptions()));
 
         BibliotecaApp.menu = menu;
-        BibliotecaApp.menu.selectOption(this.MENU_OPTION_TWO);
+        BibliotecaApp.menu.selectOption(this.MENU_OPTION_THREE);
 
         verify(menu, times(1)).stopRunning();
     }

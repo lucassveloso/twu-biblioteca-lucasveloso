@@ -1,6 +1,6 @@
 package com.twu.biblioteca.models;
 
-public class Book extends Product{
+public class Book extends Product {
     private String author;
 
     public Book(String title, String author, int year) {

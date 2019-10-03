@@ -1,6 +1,5 @@
 package com.twu.biblioteca.models;
 
-import com.twu.biblioteca.BibliotecaApp;
 import com.twu.biblioteca.HelperIO;
 import com.twu.biblioteca.menus.Menu;
 import org.junit.After;
@@ -15,13 +14,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class LibraryTest {
-    private final int MENU_OPTION_ONE = 1;
-    private final int MENU_OPTION_TWO = 2;
-    private final int MENU_OPTION_THREE = 3;
 
     List<Book> books;
     Library library;
@@ -43,7 +38,7 @@ public class LibraryTest {
 
     @Test
     public void shouldHaveAListOfBooks() {
-        assertThat(library.getBooks(), is(books));
+        assertThat(library.getProducts(), is(books));
     }
 
     @Test
@@ -68,126 +63,22 @@ public class LibraryTest {
         }
     }
 
-    @Test
-    public void shouldCheckoutABookWhenCheckoutBookIsCalled() {
-        Book book = library.getBooks().get(0);
-        UUID bookId = book.getId();
-        library.checkoutBookById(bookId);
-        assertTrue(book.isCheckedOut());
-    }
-
-    @Test
-    public void shouldNotListCheckedOutBooksWhenGetBooksAvailableIsCalled() {
-        UUID bookId = library.getBooks().get(0).getId();
-        library.checkoutBookById(bookId);
-
-        List<Book> booksAvailable = library.getBooksAvailable();
-
-        assertThat(booksAvailable.get(0).getId(), not(is(bookId)));
-    }
 
     @Test
     public void shouldNotListCheckedOutBooksWhenGetBookListTablePrintableIsCalled() {
-        UUID bookId = library.getBooks().get(0).getId();
-        library.checkoutBookById(bookId);
+        UUID bookId = library.getProducts().get(0).getId();
+        library.checkoutProductById(bookId);
 
         String bookListTablePrintable = library.getBookListTablePrintable();
 
         assertThat(bookListTablePrintable, not(containsString(String.valueOf(bookId))));
     }
 
+
     @Test
     public void shouldPrintListBooksWhenShowBookListIsCalled() {
         library.setMenu(mock(Menu.class));
         library.showBookListTablePrintable();
         assertThat(helperIO.getOutContent(), containsString(library.getBookListTablePrintable()));
-    }
-
-    @Test
-    public void shouldHaveAMenuWithOptionsWhenPopulateMenuIsCalled() {
-        library.populateMenu();
-        assertTrue(library.getMenu().getOptions().size() > 0);
-    }
-
-
-    @Test
-    public void shouldCallStartCheckoutProcessWhenOptionOneWasChosenFromMenu() {
-        List<Book> books = library.getBooks();
-        Library libraryMock = spy(new Library(books));
-        libraryMock.populateMenu();
-        libraryMock.getMenu().selectOption(this.MENU_OPTION_ONE);
-
-        verify(libraryMock, times(1)).startCheckoutProcess();
-    }
-
-    @Test
-    public void shouldPrintASuccessMessageWhenAnAvailableBookIdIsCheckedOut() {
-        UUID id = library.getBooksAvailable().get(0).getId();
-        helperIO.setIn(id.toString());
-        library.startCheckoutProcess();
-        assertThat(helperIO.getOutContent(), containsString("Thank you! Enjoy the book"));
-    }
-
-    @Test
-    public void shouldPrintAUnsuccessMessageWhenAUnavailableBookIdTryToBeCheckedOut() {
-        UUID id = library.getBooksAvailable().get(0).getId();
-        library.checkoutBookById(id);
-        helperIO.setIn(id.toString());
-        library.startCheckoutProcess();
-        assertThat(helperIO.getOutContent(), containsString("Sorry, that book is not available"));
-    }
-
-    @Test
-    public void shouldPrintAUnsuccessMessageWhenANonexistentBookIdTryToBeCheckedOut() {
-        UUID id = UUID.randomUUID();
-        helperIO.setIn(id.toString());
-        library.startCheckoutProcess();
-        assertThat(helperIO.getOutContent(), containsString("Sorry, that book is not available"));
-    }
-
-    @Test
-    public void shouldCallStartReturnProcessWhenOptionTwoWasChosenFromMenu() {
-        List<Book> books = library.getBooks();
-        Library libraryMock = spy(new Library(books));
-        libraryMock.populateMenu();
-        libraryMock.getMenu().selectOption(this.MENU_OPTION_TWO);
-
-        verify(libraryMock, times(1)).startReturnProcess();
-    }
-
-    @Test
-    public void shouldPrintASuccessMessageWhenAnAvailableBookIdIsReturned() {
-        UUID id = library.getBooksAvailable().get(0).getId();
-        library.checkoutBookById(id);
-        helperIO.setIn(id.toString());
-        library.startReturnProcess();
-        assertThat(helperIO.getOutContent(), containsString("Thank you for returning the book"));
-    }
-
-    @Test
-    public void shouldPrintAUnsuccessMessageWhenAUnavailableBookIdTryToBeReturned() {
-        UUID id = library.getBooksAvailable().get(0).getId();
-        helperIO.setIn(id.toString());
-        library.startReturnProcess();
-        assertThat(helperIO.getOutContent(), containsString("That is not a valid book to return"));
-    }
-
-    @Test
-    public void shouldPrintAUnsuccessMessageWhenANonexistentBookIdTryToBeReturned() {
-        UUID id = UUID.randomUUID();
-        helperIO.setIn(id.toString());
-        library.startReturnProcess();
-        assertThat(helperIO.getOutContent(), containsString("That is not a valid book to return"));
-    }
-
-    @Test
-    public void shouldCallStopRunningWhenOptionThreeWasChosenFromMenu() {
-        library.populateMenu();
-        Menu menu = spy(new Menu(library.getMenu().getOptions()));
-
-        library.setMenu(menu);
-        library.getMenu().selectOption(this.MENU_OPTION_THREE);
-
-        verify(menu, times(1)).stopRunning();
     }
 }

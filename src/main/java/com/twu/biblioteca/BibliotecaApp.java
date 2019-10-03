@@ -4,12 +4,15 @@ import com.twu.biblioteca.menus.Menu;
 import com.twu.biblioteca.menus.MenuOption;
 import com.twu.biblioteca.models.Book;
 import com.twu.biblioteca.models.Library;
+import com.twu.biblioteca.models.Movie;
+import com.twu.biblioteca.models.VideoRental;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BibliotecaApp {
     static Library library;
+    static VideoRental videoRental;
     static Menu menu;
 
     static void showWelcomeMessage() {
@@ -20,6 +23,10 @@ public class BibliotecaApp {
         library = new Library(getBookList());
     }
 
+    static void populateVideoRental() {
+        videoRental = new VideoRental(getMovieList());
+    }
+
     static void populateMenu() {
         menu = new Menu(getMenuOptions());
     }
@@ -27,12 +34,13 @@ public class BibliotecaApp {
     static List<MenuOption> getMenuOptions() {
         List<MenuOption> options = new ArrayList<MenuOption>();
         options.add(new MenuOption("List of Books", () -> { library.showBookListTablePrintable(); }));
+        options.add(new MenuOption("List of Movies", () -> { videoRental.showMovieListTablePrintable(); }));
         options.add(new MenuOption("Quit", () -> { menu.stopRunning(); }));
         return options;
     }
 
     static List<Book> getBookList() {
-        List<Book> books = new ArrayList<Book>();
+        List<Book> books = new ArrayList<>();
         books.add(new Book("Harry Potter Philosopher's Stone", "J. K. Rowling", 1997));
         books.add(new Book("Harry Potter The Chamber of Secrets", "J. K. Rowling", 1998));
         books.add(new Book("Harry Potter The Prisoner of Azkaban", "J. K. Rowling", 1999));
@@ -48,9 +56,19 @@ public class BibliotecaApp {
         return books;
     }
 
+    static List<Movie> getMovieList() {
+        List<Movie> movies = new ArrayList<>();
+        movies.add(new Movie("Joker", "Vlad Yudin", 2019, 9.4));
+        movies.add(new Movie("Fight Club", "Quentin Tarantino", 1999, 8.8));
+        movies.add(new Movie("Inception", "David Fincher", 2010, 8.8));
+        movies.add(new Movie("Interstellar", "Christopher Nolan", 2014));
+        return movies;
+    }
+
     public static void main(String[] args) {
         showWelcomeMessage();
         populateLibrary();
+        populateVideoRental();
         populateMenu();
         menu.run();
     }

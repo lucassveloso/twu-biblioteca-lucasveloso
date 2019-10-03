@@ -14,7 +14,7 @@ public class Product {
         this.year = year;
         this.checkedOut = false;
     }
-    
+
     public UUID getId() {
         return id;
     }
