@@ -1,6 +1,7 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.menus.Menu;
+import com.twu.biblioteca.models.AuthSystem;
 import com.twu.biblioteca.models.Library;
 import com.twu.biblioteca.models.VideoRental;
 import org.junit.After;
@@ -16,6 +17,7 @@ public class BibliotecaAppTest {
     private final int MENU_OPTION_ONE = 1;
     private final int MENU_OPTION_TWO = 2;
     private final int MENU_OPTION_THREE = 3;
+    private final int MENU_OPTION_FOUR = 4;
     private HelperIO helperIO;
 
     @Before
@@ -54,6 +56,12 @@ public class BibliotecaAppTest {
     }
 
     @Test
+    public void shouldHaveAnAuthSystemWithUsersWhenPopulateAuthSystemIsCalled() {
+        BibliotecaApp.populateAuthSystem();
+        assertTrue(BibliotecaApp.authSystem.getUsers().size() > 0);
+    }
+
+    @Test
     public void shouldCallShowBookListTablePrintableWhenOptionOneWasChosenFromMenu() {
         BibliotecaApp.populateLibrary();
         BibliotecaApp.populateMenu();
@@ -77,14 +85,25 @@ public class BibliotecaAppTest {
         verify(BibliotecaApp.videoRental, times(1)).showMovieListTablePrintable();
     }
 
+    @Test
+    public void shouldCallLoginWhenOptionThreeWasChosenFromMenu() {
+        BibliotecaApp.populateAuthSystem();
+        BibliotecaApp.populateMenu();
+        AuthSystem authSystem = mock(AuthSystem.class);
+        BibliotecaApp.authSystem = authSystem;
+
+        BibliotecaApp.menu.selectOption(this.MENU_OPTION_THREE);
+
+        verify(BibliotecaApp.authSystem, times(1)).login();
+    }
 
     @Test
-    public void shouldCallStopRunningWhenOptionThreeWasChosenFromMenu() {
+    public void shouldCallStopRunningWhenOptionFourWasChosenFromMenu() {
         BibliotecaApp.populateMenu();
         Menu menu = spy(new Menu(BibliotecaApp.menu.getOptions()));
 
         BibliotecaApp.menu = menu;
-        BibliotecaApp.menu.selectOption(this.MENU_OPTION_THREE);
+        BibliotecaApp.menu.selectOption(this.MENU_OPTION_FOUR);
 
         verify(menu, times(1)).stopRunning();
     }

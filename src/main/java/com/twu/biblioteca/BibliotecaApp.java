@@ -2,21 +2,23 @@ package com.twu.biblioteca;
 
 import com.twu.biblioteca.menus.Menu;
 import com.twu.biblioteca.menus.MenuOption;
-import com.twu.biblioteca.models.Book;
-import com.twu.biblioteca.models.Library;
-import com.twu.biblioteca.models.Movie;
-import com.twu.biblioteca.models.VideoRental;
+import com.twu.biblioteca.models.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BibliotecaApp {
+    static AuthSystem authSystem;
     static Library library;
     static VideoRental videoRental;
     static Menu menu;
 
     static void showWelcomeMessage() {
         System.out.println("Welcome to Biblioteca. Your one-stop-shop for great book titles in Bangalore!\n");
+    }
+
+    static void populateAuthSystem() {
+        authSystem = new AuthSystem(getUsers());
     }
 
     static void populateLibrary() {
@@ -31,10 +33,19 @@ public class BibliotecaApp {
         menu = new Menu(getMenuOptions());
     }
 
+    static List<User> getUsers() {
+        List<User> users = new ArrayList<User>();
+        users.add(new User("001-0001", "password1"));
+        users.add(new User("002-0002", "password2"));
+        users.add(new User("003-0003", "password3"));
+        return users;
+    }
+
     static List<MenuOption> getMenuOptions() {
         List<MenuOption> options = new ArrayList<MenuOption>();
         options.add(new MenuOption("List of Books", () -> { library.showBookListTablePrintable(); }));
         options.add(new MenuOption("List of Movies", () -> { videoRental.showMovieListTablePrintable(); }));
+        options.add(new MenuOption("Login", () -> { authSystem.login(); }));
         options.add(new MenuOption("Quit", () -> { menu.stopRunning(); }));
         return options;
     }
@@ -67,6 +78,7 @@ public class BibliotecaApp {
 
     public static void main(String[] args) {
         showWelcomeMessage();
+        populateAuthSystem();
         populateLibrary();
         populateVideoRental();
         populateMenu();
